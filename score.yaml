@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: Game Score Manager API
+  version: 1.0.0
+  description: API para gestionar puntuaciones de juegos en línea
+  contact:
+    email: ejemplo@example.com
+    name: Equipo de Desarrollo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000/api/v1/
+tags:
+  - name: Jugadores
+    description: Operaciones relacionadas con jugadores
+  - name: Puntuaciones
+    description: Operaciones relacionadas con puntuaciones
+  - name: Autenticación
+    description: Operaciones relacionadas con autenticación
+paths:
+  /jugadores:
+    get:
+      tags:
+        - Jugadores
+      summary: Obtener lista de jugadores
+      description: Obtener lista de jugadores registrados
+      operationId: getJugadores
+      responses:
+        '200':
+          description: Lista de jugadores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Jugador'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoAutorizado'
+  /jugadores/{id}:
+    get:
+      tags:
+        - Jugadores
+      summary: Obtener jugador por ID
+      description: Obtener información de un jugador por su ID
+      operationId: getJugadorById
+      parameters:
+        - name: id
+          in: path
+          description: ID del jugador
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Información del jugador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Jugador'
+        '404':
+          description: Jugador no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoEncontrado'
+  /puntuaciones:
+    get:
+      tags:
+        - Puntuaciones
+      summary: Obtener lista de puntuaciones
+      description: Obtener lista de puntuaciones de todos los jugadores
+      operationId: getPuntuaciones
+      responses:
+        '200':
+          description: Lista de puntuaciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Puntuacion'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoAutorizado'
+  /puntuaciones/{id}:
+    get:
+      tags:
+        - Puntuaciones
+      summary: Obtener puntuación por ID
+      description: Obtener información de una puntuación por su ID
+      operationId: getPuntuacionById
+      parameters:
+        - name: id
+          in: path
+          description: ID de la puntuación
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Información de la puntuación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puntuacion'
+        '404':
+          description: Puntuación no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoEncontrado'
+  /autenticacion/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión
+      description: Iniciar sesión con correo electrónico y contraseña
+      operationId: login
+      requestBody:
+        description: Credenciales de inicio de sesión
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credenciales'
+      responses:
+        '200':
+          description: Sesión iniciada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sesion'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoAutorizado'
+components:
+  schemas:
+    Jugador:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string
+        correo:
+          type: string
+        puntuacion:
+          type: integer
+    Puntuacion:
+      type: object
+      properties:
+        id:
+          type: integer
+        jugadorId:
+          type:
